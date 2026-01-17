@@ -43,3 +43,6 @@
 # Visual Studio
 out
 .vs
+
+# Cmake build folder
+build
