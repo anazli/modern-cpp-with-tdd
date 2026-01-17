@@ -19,5 +19,5 @@ TEST_F(SoundexEncoding, PadsWithZerosToEnsureThreeDigits) {
 }
 
 TEST_F(SoundexEncoding, ReplacesConsonantsWithAppropriateDigits) {
-  ASSERT_EQ("A100", soundex.encode("Ab"));
+  ASSERT_EQ("A200", soundex.encode("Ax"));
 }
