@@ -3,16 +3,20 @@
 #include <unordered_map>
 
 std::string Soundex::encode(const std::string& word) const {
-  return zeroPad(head(word) + encodedDigits(word));
+  return zeroPad(head(word) + encodedDigits(tail(word)));
 }
 
 std::string Soundex::head(const std::string& word) const {
   return word.substr(0, 1);
 }
 
+std::string Soundex::tail(const std::string& word) const {
+  return word.substr(1);
+}
+
 std::string Soundex::encodedDigits(const std::string& word) const {
-  if (word.length() > 1) return encodedDigit(word[1]);
-  return std::string();
+  if (word.empty()) return std::string();
+  return encodedDigit(word.front());
 }
 
 std::string Soundex::zeroPad(const std::string& word) const {
@@ -26,5 +30,6 @@ std::string Soundex::encodedDigit(char letter) const {
       {'j', "2"}, {'k', "2"}, {'q', "2"}, {'s', "2"}, {'x', "2"}, {'z', "2"},
       {'d', "3"}, {'t', "3"}, {'l', "4"}, {'m', "5"}, {'n', "5"}, {'r', "6"},
   };
-  return encodings.find(letter)->second;
+  auto it = encodings.find(letter);
+  return it != encodings.end() ? it->second : std::string();
 }
