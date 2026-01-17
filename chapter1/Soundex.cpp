@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+#include "Soundex.h"
+
 std::string Soundex::encode(const std::string& word) const {
   return zeroPad(head(word) + encodedDigits(tail(word)));
 }
@@ -15,8 +17,13 @@ std::string Soundex::tail(const std::string& word) const {
 }
 
 std::string Soundex::encodedDigits(const std::string& word) const {
-  if (word.empty()) return std::string();
-  return encodedDigit(word.front());
+  std::string encoding;
+  for (auto& letter : word) {
+    if (isComplete(encoding)) break;
+    if (encodedDigit(letter) != lastDigit(encoding))
+      encoding += encodedDigit(letter);
+  }
+  return encoding;
 }
 
 std::string Soundex::zeroPad(const std::string& word) const {
@@ -32,4 +39,13 @@ std::string Soundex::encodedDigit(char letter) const {
   };
   auto it = encodings.find(letter);
   return it != encodings.end() ? it->second : std::string();
+}
+
+bool Soundex::isComplete(const std::string& encoding) const {
+  return encoding.length() == MaxCodeLength - 1;
+}
+
+std::string Soundex::lastDigit(const std::string& encoding) const {
+  if (encoding.empty()) return std::string();
+  return std::string(1, encoding.back());
 }
