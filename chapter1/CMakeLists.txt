@@ -15,6 +15,7 @@ target_link_libraries(chapter1_test
 	PRIVATE
 		chapter1_lib
 		gtest_main
+		gmock
 )
 
 add_test(NAME Chapter1Tests COMMAND chapter1_test)

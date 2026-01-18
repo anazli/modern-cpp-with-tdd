@@ -1,47 +1,56 @@
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+
 #include "Soundex.h"
-#include "gtest/gtest.h"
 
 class SoundexEncoding : public testing::Test {
  public:
   Soundex soundex;
 };
 
+using testing::Eq;
+using testing::StartsWith;
+
 TEST_F(SoundexEncoding, RetainsSoleLetterOfOneLetterWord) {
   auto encoded = soundex.encode("A");
 
-  ASSERT_EQ("A000", encoded);
+  ASSERT_THAT(encoded, Eq("A000"));
 }
 
 TEST_F(SoundexEncoding, PadsWithZerosToEnsureThreeDigits) {
   auto encoded = soundex.encode("I");
 
-  ASSERT_EQ("I000", encoded);
+  ASSERT_THAT(encoded, Eq("I000"));
 }
 
 TEST_F(SoundexEncoding, ReplacesConsonantsWithAppropriateDigits) {
-  ASSERT_EQ("A200", soundex.encode("Ax"));
+  ASSERT_THAT(soundex.encode("Ax"), Eq("A200"));
 }
 
 TEST_F(SoundexEncoding, IgnoresNonAlphabetics) {
-  ASSERT_EQ("A000", soundex.encode("A#"));
+  ASSERT_THAT(soundex.encode("A#"), Eq("A000"));
 }
 
 TEST_F(SoundexEncoding, ReplacesMultipleConsonantsWithDigits) {
-  ASSERT_EQ("A234", soundex.encode("Acdl"));
+  ASSERT_THAT(soundex.encode("Acdl"), Eq("A234"));
 }
 
 TEST_F(SoundexEncoding, LimitsLengthToFourCharacters) {
-  ASSERT_EQ(4u, soundex.encode("Dcdlb").length());
+  ASSERT_THAT(soundex.encode("Dcdlb").length(), Eq(4u));
 }
 
 TEST_F(SoundexEncoding, IgnoresVowelLikeLetters) {
-  ASSERT_EQ("B234", soundex.encode("Baeiouhycdl"));
+  ASSERT_THAT(soundex.encode("Baeiouhycdl"), Eq("B234"));
 }
 
 TEST_F(SoundexEncoding, CombinesDuplicateEncodings) {
-  ASSERT_EQ(soundex.encodedDigit('b'), soundex.encodedDigit('f'));
-  ASSERT_EQ(soundex.encodedDigit('c'), soundex.encodedDigit('g'));
-  ASSERT_EQ(soundex.encodedDigit('d'), soundex.encodedDigit('t'));
+  ASSERT_THAT(soundex.encodedDigit('b'), Eq(soundex.encodedDigit('f')));
+  ASSERT_THAT(soundex.encodedDigit('c'), Eq(soundex.encodedDigit('g')));
+  ASSERT_THAT(soundex.encodedDigit('d'), Eq(soundex.encodedDigit('t')));
 
-  ASSERT_EQ("A123", soundex.encode("Abfcgdt"));
+  ASSERT_THAT(soundex.encode("Abfcgdt"), Eq("A123"));
+}
+
+TEST_F(SoundexEncoding, UppercasesFirstLetter) {
+  ASSERT_THAT(soundex.encode("abcd"), StartsWith("A"));
 }
