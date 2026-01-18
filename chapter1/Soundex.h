@@ -16,4 +16,5 @@ class Soundex {
   std::string zeroPad(const std::string& word) const;
   bool isComplete(const std::string& encoding) const;
   std::string lastDigit(const std::string& encoding) const;
+  std::string upperFront(const std::string& word) const;
 };
