@@ -5,6 +5,7 @@
 class Soundex {
  public:
   static constexpr size_t MaxCodeLength{4};
+  const std::string NotADigit{"*"};
 
   std::string encode(const std::string& word) const;
   std::string encodedDigit(char letter) const;
@@ -17,4 +18,5 @@ class Soundex {
   bool isComplete(const std::string& encoding) const;
   std::string lastDigit(const std::string& encoding) const;
   std::string upperFront(const std::string& word) const;
+  char lower(char c) const;
 };

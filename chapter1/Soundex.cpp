@@ -20,7 +20,10 @@ std::string Soundex::encodedDigits(const std::string& word) const {
   std::string encoding;
   for (auto& letter : word) {
     if (isComplete(encoding)) break;
-    if (encodedDigit(letter) != lastDigit(encoding))
+
+    auto digit = encodedDigit(letter);
+
+    if (digit != NotADigit && digit != lastDigit(encoding))
       encoding += encodedDigit(letter);
   }
   return encoding;
@@ -37,8 +40,8 @@ std::string Soundex::encodedDigit(char letter) const {
       {'j', "2"}, {'k', "2"}, {'q', "2"}, {'s', "2"}, {'x', "2"}, {'z', "2"},
       {'d', "3"}, {'t', "3"}, {'l', "4"}, {'m', "5"}, {'n', "5"}, {'r', "6"},
   };
-  auto it = encodings.find(letter);
-  return it != encodings.end() ? it->second : std::string();
+  auto it = encodings.find(lower(letter));
+  return it != encodings.end() ? it->second : NotADigit;
 }
 
 bool Soundex::isComplete(const std::string& encoding) const {
@@ -46,10 +49,14 @@ bool Soundex::isComplete(const std::string& encoding) const {
 }
 
 std::string Soundex::lastDigit(const std::string& encoding) const {
-  if (encoding.empty()) return std::string();
+  if (encoding.empty()) return NotADigit;
   return std::string(1, encoding.back());
 }
 
 std::string Soundex::upperFront(const std::string& word) const {
   return std::string(1, std::toupper(static_cast<unsigned char>(word.front())));
+}
+
+char Soundex::lower(char c) const {
+  return std::tolower(static_cast<unsigned char>(c));
 }
